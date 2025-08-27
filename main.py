@@ -1,6 +1,21 @@
-def main():
-    print("Hello from teachable!")
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from fastapi.staticfiles import StaticFiles
+
+app = FastAPI()
+
+# setting up templates
+templates =Jinja2Templates(directory="templates")
+
+# setting up static files
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 
-if __name__ == "__main__":
-    main()
+@app.get("/", response_class=HTMLResponse)
+async def root(request: Request):
+    return templates.TemplateResponse("index.html", {"request": request})
+
+@app.get("/get-started", response_class=HTMLResponse)
+async def about(request: Request):
+    return templates.TemplateResponse("templates.html", {"request": request})
